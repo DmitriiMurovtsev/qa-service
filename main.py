@@ -56,7 +56,7 @@ async def add(request: Request) -> Dict[str, str]:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/search")
-async def search(query: str, top: int = 3) -> List[Dict[str, str]]:
+async def search(request: Request) -> List[Dict[str, str]]:
     """ 
     Ищет похожие вопросы в коллекции.
     
@@ -70,6 +70,9 @@ async def search(query: str, top: int = 3) -> List[Dict[str, str]]:
     Raises:
         Exception - ошибка при поиске
     """
+    data = await request.json()
+    query = data.get("query")
+    top = data.get("top")
     try:
         embedding = model.encode(query)
         results = client.search(
