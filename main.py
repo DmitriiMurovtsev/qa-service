@@ -6,7 +6,7 @@ from qdrant_client.models import PointStruct, VectorParams, Distance
 from uuid import uuid4
 
 # Настройка
-MODEL_NAME = 'sberbank-ai/sbert-base'
+MODEL_NAME = 'cointegrated/LaBSE-en-ru'
 COLLECTION_NAME = 'qa_collection'
 VECTOR_SIZE = 768  # зависит от модели
 
