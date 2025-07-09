@@ -13,7 +13,7 @@ VECTOR_SIZE = 768  # зависит от модели
 # Инициализация
 app = FastAPI()
 model = SentenceTransformer(MODEL_NAME)
-client = QdrantClient(host="localhost", port=6333)
+client = QdrantClient(host="qdrant", port=6333)
 
 # Создаём коллекцию при запуске, если не существует
 if COLLECTION_NAME not in [c.name for c in client.get_collections().collections]:
