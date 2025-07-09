@@ -91,6 +91,6 @@ async def all() -> List[Dict[str, str]]:
         Exception - ошибка при получении всех вопросов
     """
     try:
-        return [r.payload for r in client.scroll(collection_name=COLLECTION_NAME)]
+        return [r.payload for r in client.scroll(collection_name=COLLECTION_NAME)[0]]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
