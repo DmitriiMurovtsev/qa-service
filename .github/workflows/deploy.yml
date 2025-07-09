@@ -1,0 +1,30 @@
+name: Deploy QA-service to Server
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v3
+
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                  host: ${{ secrets.SSH_HOST }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      cd /srv/services/qa-service
+                      git pull
+                      docker stop qa-service || true
+                      docker rm qa-service || true
+                      export DOCKER_BUILDKIT=1
+                      docker buildx build --platform linux/amd64 -t qa-service:1.0 --load .
+                      docker run -d -p 127.0.0.1:6333:6333 --name qa-service --env-file .env qa-service:1.0
+                      docker image prune -f
