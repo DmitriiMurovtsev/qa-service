@@ -1,5 +1,5 @@
 from typing import Dict, List
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams, Distance
@@ -23,7 +23,7 @@ if COLLECTION_NAME not in [c.name for c in client.get_collections().collections]
     )
 
 @app.post("/add")
-async def add(question: str, answer: str) -> Dict[str, str]:
+async def add(request: Request) -> Dict[str, str]:
     """
     Добавляет вопрос-ответ в коллекцию
 
@@ -37,6 +37,9 @@ async def add(question: str, answer: str) -> Dict[str, str]:
     Raises:
         Exception - ошибка при добавлении
     """
+    data = await request.json()
+    question = data.get("question")
+    answer = data.get("answer")
     try:
         combined = f"Вопрос: {question} Ответ: {answer}"
         embedding = model.encode(combined)
