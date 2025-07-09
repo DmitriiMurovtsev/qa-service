@@ -78,7 +78,7 @@ async def search(request: Request) -> List[Dict[str, str]]:
         results = client.search(
             collection_name=COLLECTION_NAME,
             query_vector=embedding,
-            top=top
+            limit=top
         )
         return [r.payload for r in results]
     except Exception as e:
