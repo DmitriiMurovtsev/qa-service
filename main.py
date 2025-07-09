@@ -1,5 +1,5 @@
 from typing import Dict, List
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams, Distance
@@ -50,7 +50,7 @@ async def add(question: str, answer: str) -> Dict[str, str]:
         client.upsert(collection_name=COLLECTION_NAME, points=[point])
         return {"status": "ok", "message": "Question-answer added successfully"}
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/search")
 async def search(query: str, top: int = 3) -> List[Dict[str, str]]:
@@ -76,7 +76,7 @@ async def search(query: str, top: int = 3) -> List[Dict[str, str]]:
         )
         return [r.payload for r in results]
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/all")
@@ -93,4 +93,4 @@ async def all() -> List[Dict[str, str]]:
     try:
         return [r.payload for r in client.scroll(collection_name=COLLECTION_NAME)]
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
