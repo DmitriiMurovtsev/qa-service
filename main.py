@@ -82,7 +82,7 @@ async def search(query: str, top: int = 3) -> List[Dict[str, str]]:
 @app.get("/all")
 async def all() -> List[Dict[str, str]]:
     """
-    Возвращает все вопросы из коллекции
+    Возвращает все вопросы из коллекции.
 
     Returns:
         List[Dict[str, str]] - список всех вопросов и ответов
