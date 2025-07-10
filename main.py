@@ -89,7 +89,7 @@ async def search(request: Request) -> List[Dict[str, str]]:
             collection_name=COLLECTION_NAME,
             query_vector=embedding,
             limit=top,
-            score_threshold=0.75,
+            score_threshold=0.50,
         )
         logger.info(f'Результат поиска: {results}')
         return [r.payload for r in results]
