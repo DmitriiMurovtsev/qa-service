@@ -100,3 +100,26 @@ async def all() -> List[Dict[str, str]]:
         return [r.payload for r in client.scroll(collection_name=COLLECTION_NAME)[0]]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/delete")
+async def delete(request: Request) -> bool:
+    """
+    Удаляет вопрос-ответ из коллекции.
+    Parameters:
+        question: str - вопрос
+        answer: str - ответ
+    Returns:
+        bool - успешно ли удалено
+    Raises:
+        Exception - ошибка при удалении
+    """
+    data = await request.json()
+    question = data.get("question")
+    answer = data.get("answer")
+    try:
+        client.delete(collection_name=COLLECTION_NAME, points=[question, answer])
+        return True
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
