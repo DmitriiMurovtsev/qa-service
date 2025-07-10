@@ -91,7 +91,7 @@ async def search(request: Request) -> List[Dict[str, str]]:
             limit=top,
             score_threshold=0.10,
         )
-        logger.info(f'Результат поиска: {results}')
+        logger.info(f'Вопрос: {query}\nРезультат поиска: {results}')
         return [r.payload for r in results]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
