@@ -1,9 +1,19 @@
+import logging
 from typing import Dict, List
 from fastapi import FastAPI, HTTPException, Request
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue
 from uuid import uuid4
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# логируем в stdout
+handler = logging.StreamHandler()
+formatter = logging.Formatter("[%(asctime)s] %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 # Настройка
 MODEL_NAME = 'cointegrated/LaBSE-en-ru'
@@ -80,7 +90,8 @@ async def search(request: Request) -> List[Dict[str, str]]:
             query_vector=embedding,
             limit=top,
             score_threshold=0.75,
-        )        
+        )
+        logger.info(f'Результат поиска: {results}')
         return [r.payload for r in results]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
