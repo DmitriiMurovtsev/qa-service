@@ -2,7 +2,7 @@ from typing import Dict, List
 from fastapi import FastAPI, HTTPException, Request
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
-from qdrant_client.models import PointStruct, VectorParams, Distance
+from qdrant_client.models import PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue
 from uuid import uuid4
 
 # Настройка
@@ -118,7 +118,21 @@ async def delete(request: Request) -> bool:
     question = data.get("question")
     answer = data.get("answer")
     try:
-        client.delete(collection_name=COLLECTION_NAME, points=[question, answer])
+        result = client.delete(
+            collection_name=COLLECTION_NAME,
+            points_selector=Filter(
+                must=[
+                    FieldCondition(
+                        key="question",
+                        match=MatchValue(value=question)
+                    ),
+                    FieldCondition(
+                        key="answer",
+                        match=MatchValue(value=answer)
+                    ),
+                ]
+            )
+        )
         return True
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
