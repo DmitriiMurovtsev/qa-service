@@ -78,8 +78,9 @@ async def search(request: Request) -> List[Dict[str, str]]:
         results = client.search(
             collection_name=COLLECTION_NAME,
             query_vector=embedding,
-            limit=top
-        )
+            limit=top,
+            score_threshold=0.75,
+        )        
         return [r.payload for r in results]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
